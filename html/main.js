@@ -23,7 +23,7 @@ function upload() {
         mode: "cors",
         method: "POST",
         body: JSON.stringify({
-          key: file.name,
+          file_name: file.name,
         }),
       })
         .then((res) => res.json())
