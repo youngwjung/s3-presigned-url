@@ -34,7 +34,7 @@ def root():
 @app.post("/upload")
 def upload(object: S3Object):
     ## Boto3를 이용해서 파일 업로드에 사용할 미리 서명된 URL을 받아서 반환하세요. SDK에서 반환되는 응답을 그대로 반환하면 돱니다.
-
+    key = object.file_name
     return response
 
 
