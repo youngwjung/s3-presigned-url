@@ -4,9 +4,11 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import boto3
 import requests
+from botocore.config import Config
 
 
-region = requests.get('http://169.254.169.254/latest/meta-data/placement/region').text
+region = requests.get(
+    'http://169.254.169.254/latest/meta-data/placement/region').text
 bucket = BUCKET_NAME
 
 app = FastAPI()
@@ -33,9 +35,10 @@ def root():
 
 @app.post("/upload")
 def upload(object: S3Object):
-    ## Boto3를 이용해서 파일 업로드에 사용할 미리 서명된 URL을 받아서 반환하세요. SDK에서 반환되는 응답을 그대로 반환하면 돱니다.
+    # Boto3를 이용해서 파일 업로드에 사용할 미리 서명된 URL을 받아서 반환하세요. SDK에서 반환되는 응답을 그대로 반환하면 돱니다.
     key = object.file_name
-    s3 = boto3.client("s3", region_name=region)
+    s3 = boto3.client("s3", region_name=region, config=Config(
+        signature_version='s3v4', s3={'addressing_style': 'virtual'}))
     response = s3.generate_presigned_post(
         Bucket=bucket,
         Key=key
